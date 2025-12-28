@@ -1,0 +1,40 @@
+SET REFERENTIAL_INTEGRITY FALSE;
+
+CREATE TABLE T_ACCOUNT (
+    id UUID PRIMARY KEY,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    name VARCHAR(255),
+    phone_number VARCHAR(255) NOT NULL UNIQUE,
+    nrc_number VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255),
+    status VARCHAR(255),
+    role VARCHAR(255)
+);
+
+CREATE TABLE T_PROJECT (
+    id UUID PRIMARY KEY,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    title VARCHAR(255),
+    description VARCHAR(255),
+    is_deleted BOOLEAN DEFAULT FALSE,
+    account_id UUID NOT NULL,
+    CONSTRAINT fk_project_account
+        FOREIGN KEY (account_id)
+        REFERENCES T_ACCOUNT(id)
+);
+
+CREATE TABLE T_BLACKLIST (
+    id UUID PRIMARY KEY,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    phone_number VARCHAR(255) NOT NULL UNIQUE,
+    nrc_number VARCHAR(255) NOT NULL UNIQUE,
+    admin_id UUID NOT NULL,
+    CONSTRAINT fk_blacklist_admin
+        FOREIGN KEY (admin_id)
+        REFERENCES T_ACCOUNT(id)
+);
+
+SET REFERENTIAL_INTEGRITY TRUE;
