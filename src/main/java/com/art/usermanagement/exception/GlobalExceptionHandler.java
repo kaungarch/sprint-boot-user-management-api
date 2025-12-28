@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -217,6 +218,22 @@ public class GlobalExceptionHandler {
                 .data(null)
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadCredentialsException(BadCredentialsException ex)
+    {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message("Unauthorized access")
+                .errors(errors)
+                .timestamp(LocalDateTime.now())
+                .data(null)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
     }
 
 }

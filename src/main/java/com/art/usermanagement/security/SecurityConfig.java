@@ -54,9 +54,14 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authReq -> {
-//                    authReq.requestMatchers(apiPrefix + "/auth/*").permitAll();
-//                    authReq.anyRequest().authenticated();
-                    authReq.anyRequest().permitAll();
+                    authReq.requestMatchers(apiPrefix + "/auth/*",
+                                    apiPrefix + "/accounts/registration",
+                                    "/swagger-ui/*",
+                                    "/v3/api-docs/*",
+                                    "/v3/api-docs")
+                            .permitAll();
+                    authReq.anyRequest().authenticated();
+//                    authReq.anyRequest().permitAll();
                 })
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
 
@@ -47,13 +45,18 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateRefreshToken(UUID accountId)
+    public String generateRefreshToken(AccountDetails accountDetails)
     {
         long expirationInMillis = Long.sum(this.refreshTokenExp, System.currentTimeMillis());
+
+        Map<String, String> claims = new HashMap<>();
+        claims.put("phoneNumber", accountDetails.getUsername());
+
         return Jwts.builder()
-                .id(accountId.toString())
+                .id(accountDetails.getAccountId().toString())
                 .issuedAt(new Date())
                 .signWith(this.getKey(), SignatureAlgorithm.HS256)
+                .claims(claims)
                 .expiration(
                         new Date(expirationInMillis)
                 ).compact();

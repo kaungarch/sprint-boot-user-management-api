@@ -51,7 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             boolean isTokenValid = this.jwtService.isValid(accessToken);
 
             if (!isTokenValid) {
-                this.exceptionResolver.resolveException(request,response,null,new AccessDeniedException("Token is " +
+                this.exceptionResolver.resolveException(request, response, null, new AccessDeniedException("Token is " +
                         "expired or invalid."));
                 return;
             }
@@ -89,25 +89,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)
     {
-        List<String> publicEndpoints = List.of(apiPrefix + "/auth/*", apiPrefix + "/accounts/register");
+        List<String> publicEndpoints = List.of(apiPrefix + "/auth/*",
+                apiPrefix + "/accounts/register",
+                "/swagger-ui/*",
+                "/v3/api-docs",
+                "/v3/api-docs/*"
+        );
         return publicEndpoints.stream()
                 .map(PathPatternRequestMatcher::pathPattern)
                 .anyMatch(matcher -> matcher.matches(request));
-    }
-
-    private void writeErrorResponse(HttpServletResponse response, HttpStatus status, String message) throws IOException
-    {
-        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
-                .status(status.value())
-                .data(null)
-                .message(message)
-                .timestamp(LocalDateTime.now())
-                .errors(null)
-                .build();
-        response.setStatus(status.value());
-        response.setContentType("application/json");
-        String resBody = new ObjectMapper().writer().writeValueAsString(apiResponse);
-        response.getWriter().write(resBody);
     }
 
 }

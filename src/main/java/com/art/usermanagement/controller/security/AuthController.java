@@ -5,6 +5,7 @@ import com.art.usermanagement.dto.response.ApiResponse;
 import com.art.usermanagement.dto.response.AuthResponse;
 import com.art.usermanagement.service.auth.AuthService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,8 +34,8 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<ApiResponse<Object>> signIn(@RequestBody @Valid AccountSignInRequest request,
-                                               HttpServletResponse response,
-                                              @Value("${jwt.refresh.token.expiration}") long refreshTokenExp) throws IOException
+                                                      HttpServletResponse response,
+                                                      @Value("${jwt.refresh.token.expiration}") long refreshTokenExp) throws IOException
     {
         long sessionCookieAgeInSeconds = refreshTokenExp / 1000L;
         AuthResponse authResponse = this.authService.signIn(request);
@@ -55,6 +56,27 @@ public class AuthController {
                 .message("Signin succeed.")
                 .errors(null)
                 .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + authResponse.getAccessToken())
+                .body(apiResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<Object>> refreshToken(HttpServletRequest servletRequest)
+    {
+        AuthResponse authResponse = this.authService.refresh(servletRequest);
+
+        Map<String, String> resBody = new HashMap<>();
+        resBody.put("accessToken", authResponse.getAccessToken());
+
+        ApiResponse<Object> apiResponse = ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Token refreshed successfully")
+                .data(resBody)
+                .timestamp(LocalDateTime.now())
+                .errors(null)
                 .build();
 
         return ResponseEntity.ok()
