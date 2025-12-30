@@ -1,7 +1,9 @@
 package com.art.usermanagement.controller.blacklist;
 
+import com.art.usermanagement.dto.request.BlacklistFilterParam;
 import com.art.usermanagement.dto.response.ApiResponse;
 import com.art.usermanagement.dto.response.BlackListDto;
+import com.art.usermanagement.dto.response.PaginationDto;
 import com.art.usermanagement.security.AccountDetails;
 import com.art.usermanagement.service.blacklist.BlacklistService;
 import org.springframework.http.HttpStatus;
@@ -42,6 +44,36 @@ public class BlacklistController {
                 .build();
         URI uri = ServletUriComponentsBuilder.fromPath("/blacklists/{id}").build(blackListDto.getId());
         return ResponseEntity.created(uri).body(apiResponse);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('SUPER_USER')")
+    public ResponseEntity<ApiResponse<BlackListDto>> getBlacklistById(@PathVariable UUID id)
+    {
+        BlackListDto blackListDto = this.blacklistService.getBlackListById(id);
+        ApiResponse<BlackListDto> apiResponse = ApiResponse.<BlackListDto>builder()
+                .status(HttpStatus.OK.value())
+                .message("Retrieved blacklist successfully")
+                .data(blackListDto)
+                .timestamp(LocalDateTime.now())
+                .errors(null)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('SUPER_USER')")
+    public ResponseEntity<ApiResponse<PaginationDto>> filter(@RequestParam @ModelAttribute BlacklistFilterParam param)
+    {
+        PaginationDto paginationDto = this.blacklistService.filter(param);
+        ApiResponse<PaginationDto> apiResponse = ApiResponse.<PaginationDto>builder()
+                .status(HttpStatus.OK.value())
+                .message("Retrieved blacklists successfully")
+                .data(paginationDto)
+                .timestamp(LocalDateTime.now())
+                .errors(null)
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
     @DeleteMapping("/{blacklistId}")
