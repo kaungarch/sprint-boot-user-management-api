@@ -6,10 +6,12 @@ import com.art.usermanagement.dto.response.BlackListDto;
 import com.art.usermanagement.dto.response.PaginationDto;
 import com.art.usermanagement.security.AccountDetails;
 import com.art.usermanagement.service.blacklist.BlacklistService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("${apiPrefix}/blacklists")
+@Tag(name = "Blacklist Endpoints")
 public class BlacklistController {
 
     private BlacklistService blacklistService;
@@ -63,7 +66,7 @@ public class BlacklistController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('SUPER_USER')")
-    public ResponseEntity<ApiResponse<PaginationDto>> filter(@RequestParam @ModelAttribute BlacklistFilterParam param)
+    public ResponseEntity<ApiResponse<PaginationDto>> filter(@Validated @ModelAttribute BlacklistFilterParam param)
     {
         PaginationDto paginationDto = this.blacklistService.filter(param);
         ApiResponse<PaginationDto> apiResponse = ApiResponse.<PaginationDto>builder()
@@ -76,13 +79,13 @@ public class BlacklistController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @DeleteMapping("/{blacklistId}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('SUPER_USER')")
     public ResponseEntity<ApiResponse<Void>> removeBlacklist(
-            @PathVariable UUID blacklistId,
+            @PathVariable UUID id,
             @AuthenticationPrincipal AccountDetails accountDetails)
     {
-        this.blacklistService.delete(blacklistId, accountDetails);
+        this.blacklistService.delete(id, accountDetails);
         ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .message("Removed blacklist record successfully")

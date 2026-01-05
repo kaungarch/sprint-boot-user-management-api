@@ -6,8 +6,15 @@ This is a User Management System built with Spring Boot and H2 in-memory databas
 
 ### Prerequisites
 
-- Java 17 or later
-- Maven 3.8+
+## Tech Stack
+
+- Java 17
+- Spring Boot
+- Spring Security + JWT
+- H2 Database
+- Swagger (Springdoc OpenAPI)
+- Maven
+
 
 ### Installation
 
@@ -42,8 +49,13 @@ This application includes API documentation using Swagger UI.
 After starting the application, you can access the Swagger UI at:
 
 ```
-http://localhost:8080/api/swagger-ui/index.html
+http://localhost:8080/swagger-ui/index.html
 ```
+
+## Account Status Flow
+
+PENDING -> APPROVED -> BLOCKED\
+PENDING -> BLACKLIST
 
 ## API Documentation
 
@@ -84,7 +96,9 @@ http://localhost:8080/api/v1
     "nrcNumber": "string",
     "role": "string"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 #### 2. Approve an account registration (Superuser can access)
@@ -111,7 +125,9 @@ http://localhost:8080/api/v1
     "createdAt": "string (ISO 8601 datetime)",
     "updatedAt": "string (ISO 8601 datetime)"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -140,7 +156,9 @@ http://localhost:8080/api/v1
     "createdAt": "string (ISO 8601 datetime)",
     "updatedAt": "string (ISO 8601 datetime)"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -169,7 +187,9 @@ http://localhost:8080/api/v1
     "createdAt": "string (ISO 8601 datetime)",
     "updatedAt": "string (ISO 8601 datetime)"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -198,7 +218,9 @@ http://localhost:8080/api/v1
     "createdAt": "string (ISO 8601 datetime)",
     "updatedAt": "string (ISO 8601 datetime)"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -227,7 +249,9 @@ http://localhost:8080/api/v1
     "createdAt": "string (ISO 8601 datetime)",
     "updatedAt": "string (ISO 8601 datetime)"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -256,7 +280,9 @@ http://localhost:8080/api/v1
     "createdAt": "string (ISO 8601 datetime)",
     "updatedAt": "string (ISO 8601 datetime)"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -285,7 +311,9 @@ http://localhost:8080/api/v1
     "createdAt": "string (ISO 8601 datetime)",
     "updatedAt": "string (ISO 8601 datetime)"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -295,16 +323,7 @@ http://localhost:8080/api/v1
 
 ##### Request parameters:
 
-```json
-{
-  "page": "number",
-  "size": "number",
-  "order": "string (asc/ desc)",
-  "sortBy": "string",
-  "status": "string",
-  "role": "string"
-}
-```
+``` ?page=1&size=10&order=asc&sortBy=name&role=USER ```
 
 ##### Response:
 
@@ -326,7 +345,9 @@ http://localhost:8080/api/v1
          "prevPageUrl": "string"
       }
    },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -357,7 +378,9 @@ http://localhost:8080/api/v1
     "title": "string",
     "description": "string"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -381,7 +404,9 @@ http://localhost:8080/api/v1
       "title": "string",
       "description": "string"
    },
-   "errors": {}
+   "errors": {
+      "message": "string"
+   }
 } 
 ```
 
@@ -410,7 +435,9 @@ http://localhost:8080/api/v1
       "title": "string",
       "description": "string"
    },
-   "errors": {}
+   "errors": {
+      "message": "string"
+   }
 }
 ```
 
@@ -430,7 +457,9 @@ http://localhost:8080/api/v1
   "status": "http status code",
   "message": "string",
   "data": {},
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -449,7 +478,9 @@ http://localhost:8080/api/v1
   "status": "http status code",
   "message": "string",
   "data": {},
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -459,14 +490,7 @@ http://localhost:8080/api/v1
 
 ##### Request parameters:
 
-```json 
-{
-  "page": "number",
-  "size": "number",
-  "order": "string (asc/ desc)",
-  "sortBy": "string"
-}
-```
+``` ?page=1&size=10&order=asc&sortBy=title ```
 
 ##### Response:
 
@@ -488,7 +512,9 @@ http://localhost:8080/api/v1
          "prevPageUrl": "string"
       }
    },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -525,15 +551,103 @@ http://localhost:8080/api/v1
          "updatedAt": "string (ISO 8601 datetime)"
       }
    },
-   "errors": {}
+   "errors": {
+      "message": "string"
+   }
 }
 ```
 
 #### 2. View a blacklist record (Superuser can access)
 
+**GET** `/blacklists/{id}`
+
+##### Path variable:
+
+``` id - UUID ```
+
+##### Response:
+
+```json 
+{
+  "timestamp": "string (ISO 8601 datetime)",
+  "status": "http status code",
+  "message": "string",
+  "data": {
+    "id": "UUID",
+    "phoneNumber": "string",
+    "nrcNumber": "string",
+    "blackListedBy": {
+      "id": "UUID",
+      "name": "string",
+      "phoneNumber": "string",
+      "nrcNumber": "string",
+      "status": "string",
+      "role": "string",
+      "createdAt": "string (ISO 8601 datetime)",
+      "updatedAt": "string (ISO 8601 datetime)"
+    }
+  },
+  "errors": {
+     "message": "string"
+  }
+}
+```
+
 #### 3. Delete a blacklist record (Superuser can access)
 
+**DELETE** `/blacklists/{id}`
+
+##### Path variable:
+
+``` id - UUID ```
+
+##### Response
+
+```json
+{
+  "timestamp": "string (ISO 8601 datetime)",
+  "status": "http status code",
+  "message": "string",
+  "data": {},
+  "errors": {
+     "message": "string"
+  }
+}
+```
+
 #### 4. Filter blacklist records (Superuser can access)
+
+**GET** `/blacklists`
+
+##### Request parameters:
+
+``` ?page=1&size=10&order=asc&sortBy=phoneNumber ```
+
+##### Response 
+
+```json
+{
+  "timestamp": "string (ISO 8601 datetime)",
+  "status": "http status code",
+  "message": "string",
+  "data": {
+    "content": [
+      {}
+    ],
+    "pagination": {
+      "currentPage": "number",
+      "pageSize": "number",
+      "totalPages": "number",
+      "totalItems": "number",
+      "nextPageUrl": "string",
+      "prevPageUrl": "string"
+    }
+  },
+  "errors": {
+     "message": "string"
+  }
+}
+```
 
 ### Auth Endpoints
 
@@ -560,7 +674,9 @@ http://localhost:8080/api/v1
   "data": {
      "accessToken": "string"
   },
-  "errors": {}
+  "errors": {
+     "message": "string"
+  }
 }
 ```
 
@@ -577,7 +693,9 @@ http://localhost:8080/api/v1
    "data": {
       "accessToken": "string"
    },
-   "errors": {}
+   "errors": {
+      "message": "string"
+   }
 }
 ```
 
@@ -585,5 +703,5 @@ http://localhost:8080/api/v1
 
 ## License
 
-This project is for educational purposes as part of an internship assignment.
+This project is for educational purposes.
 

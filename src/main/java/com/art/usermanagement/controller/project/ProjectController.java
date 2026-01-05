@@ -8,6 +8,7 @@ import com.art.usermanagement.dto.response.PaginationDto;
 import com.art.usermanagement.dto.response.ProjectSummaryDto;
 import com.art.usermanagement.security.AccountDetails;
 import com.art.usermanagement.service.project.ProjectService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("${apiPrefix}/projects")
+@Tag(name = "Project Endpoints")
 public class ProjectController {
 
     private ProjectService projectService;

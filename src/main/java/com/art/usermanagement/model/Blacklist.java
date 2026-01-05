@@ -1,13 +1,12 @@
 package com.art.usermanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "T_BLACKLIST",
         uniqueConstraints = @UniqueConstraint(columnNames = {"phone_number", "nrc_number"})
@@ -26,6 +25,7 @@ public class Blacklist extends BaseModel {
     @Column(name = "nrc_number", nullable = false)
     private String nrcNumber;
 
+    @JsonIgnore
     @ManyToOne()
     @JoinColumn(
             name = "admin_id",

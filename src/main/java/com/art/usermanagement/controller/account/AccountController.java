@@ -5,6 +5,7 @@ import com.art.usermanagement.dto.response.AccountDetailsDto;
 import com.art.usermanagement.dto.response.AccountSummaryDto;
 import com.art.usermanagement.dto.response.ApiResponse;
 import com.art.usermanagement.service.account.AccountService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("${apiPrefix}/accounts")
+@Tag(name = "Account Endpoints")
 public class AccountController {
 
     @Value("apiPrefix")

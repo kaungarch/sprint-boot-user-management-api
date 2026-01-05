@@ -46,7 +46,7 @@ public class BlacklistRepoTest {
     }
 
     @Test
-    public void testBlacklistFilter_one()
+    public void testBlacklistFilterWithSizeTwo()
     {
         BlacklistFilterParam param = BlacklistFilterParam.builder()
                 .size(2).build();
@@ -54,5 +54,16 @@ public class BlacklistRepoTest {
         Pageable pageable = getPageable(param);
         Page<Blacklist> blacklists = this.blacklistRepo.filter(pageable);
         assertThat(blacklists.stream().count()).isEqualTo(2L);
+    }
+
+    @Test
+    public void testFilterWithSortBy()
+    {
+        BlacklistFilterParam param = BlacklistFilterParam.builder().sortBy("nrcNumber").build();
+        System.out.println(param);
+        Pageable pageable = getPageable(param);
+        Page<Blacklist> blacklists = this.blacklistRepo.filter(pageable);
+        assertThat(blacklists.stream().count()).isEqualTo(5L);
+
     }
 }

@@ -6,6 +6,7 @@ import com.art.usermanagement.dto.response.AccountDto;
 import com.art.usermanagement.dto.response.ApiResponse;
 import com.art.usermanagement.dto.response.PaginationDto;
 import com.art.usermanagement.service.account.AccountService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "${apiPrefix}/accounts")
+@Tag(name = "Admin Endpoints")
 public class AdminController {
 
     private AccountService accountService;

@@ -4,6 +4,7 @@ import com.art.usermanagement.dto.request.AccountSignInRequest;
 import com.art.usermanagement.dto.response.ApiResponse;
 import com.art.usermanagement.dto.response.AuthResponse;
 import com.art.usermanagement.service.auth.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "${apiPrefix}/auth")
+@Tag(name = "Auth Endpoints")
 public class AuthController {
 
     private AuthService authService;
